@@ -10,20 +10,32 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // 初始化 Supabase 客户端
 let supabase;
 
-function initSupabase() {
-    try {
-        console.log('Initializing Supabase client...');
-        if (typeof supabaseJs === 'undefined') {
-            throw new Error('Supabase client library not loaded');
-        }
-        supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('Supabase client initialized successfully');
-        return true;
-    } catch (error) {
-        console.error('Error initializing Supabase client:', error);
-        alert('初始化数据库连接失败：' + error.message);
-        return false;
-    }
+function waitForSupabase(maxAttempts = 10) {
+    return new Promise((resolve, reject) => {
+        let attempts = 0;
+        
+        const checkSupabase = () => {
+            attempts++;
+            console.log(`Attempting to initialize Supabase (${attempts}/${maxAttempts})...`);
+            
+            if (window.supabase) {
+                try {
+                    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    console.log('Supabase client initialized successfully');
+                    resolve(true);
+                } catch (error) {
+                    console.error('Error creating Supabase client:', error);
+                    reject(error);
+                }
+            } else if (attempts < maxAttempts) {
+                setTimeout(checkSupabase, 500);
+            } else {
+                reject(new Error('Supabase client library not loaded after maximum attempts'));
+            }
+        };
+        
+        checkSupabase();
+    });
 }
 
 // 页面元素
@@ -316,8 +328,12 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', async () => {
-    if (initSupabase()) {
+    try {
+        await waitForSupabase();
         loadPosts(true);
+    } catch (error) {
+        console.error('Failed to initialize Supabase:', error);
+        alert('初始化数据库连接失败：' + error.message);
     }
 });
 
