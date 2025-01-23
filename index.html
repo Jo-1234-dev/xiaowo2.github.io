@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据管理系统</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- 主要内容区 -->
+        <main class="main-content">
+            <!-- 发布按钮 -->
+            <div class="create-post-btn" id="createPostBtn">
+                <i class="fas fa-plus"></i>
+                <span>发布新内容</span>
+            </div>
+
+            <!-- 帖子列表 -->
+            <div id="postsContainer" class="posts-container"></div>
+
+            <!-- 加载更多按钮 -->
+            <button id="loadMoreBtn" class="load-more-btn">加载更多</button>
+        </main>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="nav-bar">
+        <input type="text" id="searchInput" placeholder="搜索...">
+        <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+
+    <!-- 发布内容弹窗 -->
+    <div class="modal" id="createPostModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>发布新内容</h2>
+                <button type="button" class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <form id="postForm" class="post-form">
+                <div class="form-group">
+                    <label for="postText">内容</label>
+                    <textarea id="postText" placeholder="有什么新鲜事？" required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel-btn" id="cancelPost">取消</button>
+                    <button type="submit" class="submit-btn">发布</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
