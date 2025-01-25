@@ -582,7 +582,7 @@ body {
 /* 小屏幕适配 */
 @media (max-width: 480px) {
     .container {
-        padding: 20px 8px 8px;
+        padding: 70px 8px 8px;
     }
 
     .post {
