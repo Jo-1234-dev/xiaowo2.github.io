@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日历 - 小窝</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="calendar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 返回按钮 -->
+        <div class="back-btn">
+            <a href="index.html"><i class="fas fa-arrow-left"></i> 返回</a>
+        </div>
+
+        <!-- 日历控制器 -->
+        <div class="calendar-controls">
+            <div class="month-nav">
+                <button id="prevMonth" class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+                <div class="date-selectors">
+                    <select id="monthSelect" class="date-select"></select>
+                    <select id="yearSelect" class="date-select"></select>
+                </div>
+                <button id="nextMonth" class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        <!-- 日历容器 -->
+        <div class="calendar-container">
+            <div class="calendar-card">
+                <div class="weekdays">
+                    <div>日</div>
+                    <div>一</div>
+                    <div>二</div>
+                    <div>三</div>
+                    <div>四</div>
+                    <div>五</div>
+                    <div>六</div>
+                </div>
+                <div class="days" id="daysContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 确认弹窗 -->
+    <div class="confirm-modal" id="confirmModal">
+        <div class="modal-content">
+            <h3>确认取消标记？</h3>
+            <div class="modal-buttons">
+                <button id="cancelBtn">取消</button>
+                <button id="confirmBtn">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="calendar.js"></script>
+</body>
+</html>

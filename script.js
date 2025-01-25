@@ -1,7 +1,12 @@
 // 检查登录状态
-if (!localStorage.getItem('isLoggedIn')) {
-    window.location.href = 'login.html';
+function checkAuth() {
+    if (!sessionStorage.getItem('isLoggedIn')) {
+        window.location.href = 'login.html';
+    }
 }
+
+// 页面加载时检查登录状态
+checkAuth();
 
 // Supabase 配置
 const SUPABASE_URL = 'https://iqiemumflwfswswwcqef.supabase.co'
@@ -318,12 +323,12 @@ document.addEventListener('touchend', (e) => {
     lastTapTime = currentTime;
 });
 
-// 退出登录
+// 退出功能
 document.getElementById('logoutBtn').addEventListener('click', () => {
-    if (confirm('确定要退出登录吗？')) {
-        localStorage.removeItem('isLoggedIn');
-        window.location.href = 'login.html';
-    }
+    // 清除登录状态
+    sessionStorage.removeItem('isLoggedIn');
+    // 跳转到登录页
+    window.location.href = 'login.html';
 });
 
 // 页面加载完成后初始化

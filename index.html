@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>数据管理系统</title>
+    <title>小窝</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -29,7 +29,10 @@
     <!-- 底部导航栏 -->
     <div class="nav-bar">
         <input type="text" id="searchInput" placeholder="搜索...">
-        <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
+        <div class="nav-buttons">
+            <a href="calendar.html" class="nav-icon-btn"><i class="fas fa-heart"></i></a>
+            <button id="logoutBtn" class="nav-icon-btn"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
     </div>
 
     <!-- 发布内容弹窗 -->
