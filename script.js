@@ -99,6 +99,7 @@ postForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const content = postText.value.trim();
+    const currentUser = sessionStorage.getItem('currentUser');
 
     if (!content) {
         alert('请输入内容');
@@ -106,25 +107,41 @@ postForm.addEventListener('submit', async (e) => {
     }
 
     try {
-        // 准备要插入的数据
-        const newPost = {
+        // 尝试发布带作者的帖子
+        let newPost = {
             content: content,
             created_at: new Date().toISOString()
         };
 
+        // 如果有当前用户，尝试添加作者信息
+        if (currentUser) {
+            newPost.author = currentUser;
+        }
+
         // 插入数据
-        const { error } = await supabase
+        const { data, error } = await supabase
             .from('posts')
             .insert([newPost]);
 
-        if (error) throw error;
+        if (error) {
+            // 如果带作者发布失败，尝试不带作者发布
+            if (error.message.includes('author')) {
+                delete newPost.author;
+                const { data: data2, error: error2 } = await supabase
+                    .from('posts')
+                    .insert([newPost]);
+                if (error2) throw error2;
+            } else {
+                throw error;
+            }
+        }
 
         // 关闭弹窗并重新加载数据
         closeModal();
         await loadPosts(true);
     } catch (error) {
         console.error('Error creating post:', error);
-        alert('发布失败：' + error.message);
+        alert('发布失败，请重试');
     }
 });
 
@@ -145,19 +162,23 @@ async function loadPosts(reset = false) {
 
         let query = supabase
             .from('posts')
-            .select('*');
+            .select('*')
+            .order('created_at', { ascending: false });
 
         if (currentSearchTerm) {
             query = query.ilike('content', `%${currentSearchTerm}%`);
         }
 
-        const { data, error } = await query
-            .order('created_at', { ascending: false })
-            .range(from, to);
+        // 获取帖子数据
+        const { data: posts, error } = await query.range(from, to);
 
-        if (error) throw error;
+        if (error) {
+            console.error('Error loading posts:', error);
+            postsContainer.innerHTML = '<div class="no-posts">加载失败，请刷新页面重试</div>';
+            return;
+        }
 
-        if (!data || data.length === 0) {
+        if (!posts || posts.length === 0) {
             hasMore = false;
             if (currentPage === 1) {
                 postsContainer.innerHTML = '<div class="no-posts">暂无内容</div>';
@@ -165,12 +186,14 @@ async function loadPosts(reset = false) {
             return;
         }
 
-        renderPosts(data);
+        renderPosts(posts);
         currentPage++;
-        hasMore = data.length === PAGE_SIZE;
+        hasMore = posts.length === PAGE_SIZE;
     } catch (error) {
         console.error('Error loading posts:', error);
-        alert('加载失败：' + error.message);
+        if (currentPage === 1) {
+            postsContainer.innerHTML = '<div class="no-posts">加载失败，请刷新页面重试</div>';
+        }
     } finally {
         isLoading = false;
         updateLoadMoreButton();
@@ -179,10 +202,19 @@ async function loadPosts(reset = false) {
 
 // 渲染帖子
 function renderPosts(posts) {
-    postsContainer.innerHTML = posts.map(post => `
+    const currentUser = sessionStorage.getItem('currentUser');
+    
+    postsContainer.innerHTML = posts.map(post => {
+        // 如果帖子有作者信息就用帖子的作者，否则用默认头像
+        const avatarSrc = post.author === 'admin2' ? 'images/cute-avatar.png' : 'images/pig-avatar.png';
+        
+        return `
         <div class="post" data-id="${post.id}">
             <div class="post-header">
-                <span class="post-time">${formatTime(post.created_at)}</span>
+                <img src="${avatarSrc}" alt="avatar" class="post-avatar">
+                <div class="post-info">
+                    <span class="post-time">${formatTime(post.created_at)}</span>
+                </div>
             </div>
             <div class="post-text">${post.content}</div>
             <div class="post-actions">
@@ -194,7 +226,7 @@ function renderPosts(posts) {
                 </div>
             </div>
         </div>
-    `).join('');
+    `}).join('');
 }
 
 // 删除帖子
@@ -290,24 +322,14 @@ let lastScrollPosition = 0;
 window.addEventListener('scroll', () => {
     const currentScrollPosition = window.scrollY;
     
-    // 向下滚动时隐藏导航栏，向上滚动时显示
-    if (window.innerWidth <= 768) {
-        const sidebar = document.querySelector('.sidebar');
-        if (currentScrollPosition > lastScrollPosition) {
-            sidebar.style.transform = 'translateY(100%)';
-        } else {
-            sidebar.style.transform = 'translateY(0)';
-        }
-    }
-    
-    lastScrollPosition = currentScrollPosition;
-    
     // 自动加载更多
     if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100) {
         if (hasMore && !isLoading) {
             loadPosts();
         }
     }
+    
+    lastScrollPosition = currentScrollPosition;
 });
 
 // 优化移动端双击返回顶部
@@ -329,6 +351,11 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
     sessionStorage.removeItem('isLoggedIn');
     // 跳转到登录页
     window.location.href = 'login.html';
+});
+
+// 等待 Supabase 初始化完成后加载帖子
+waitForSupabase().then(() => {
+    loadPosts(true);
 });
 
 // 页面加载完成后初始化

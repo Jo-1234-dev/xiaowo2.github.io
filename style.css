@@ -136,8 +136,8 @@ body {
 /* 主内容区域 */
 .main-content {
     margin-top: 20px;
-    padding: 0 40px;
-    max-width: 1600px;
+    padding: 0 20px;
+    max-width: 1800px;
     width: 100%;
     margin-left: auto;
     margin-right: auto;
@@ -195,30 +195,20 @@ body {
 }
 
 .post-avatar {
-    width: 48px;
-    height: 48px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    background-color: #38444d;
     margin-right: 12px;
-    flex-shrink: 0;
-}
-
-.post-content {
-    flex: 1;
 }
 
 .post-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
-    color: #8899a6;
-    font-size: 14px;
 }
 
-.post-name {
-    font-weight: bold;
-    margin-right: 10px;
+.post-info {
+    display: flex;
+    flex-direction: column;
 }
 
 .post-time {
@@ -235,13 +225,6 @@ body {
     word-wrap: break-word;
     overflow-wrap: break-word;
     max-width: 100%;
-}
-
-.post-meta {
-    color: #8899a6;
-    font-size: 14px;
-    margin-top: 5px;
-    display: block;
 }
 
 .post-actions {
@@ -265,8 +248,15 @@ body {
     background-color: rgba(29, 161, 242, 0.1);
 }
 
-.action-btn i {
-    font-size: 16px;
+.post-author {
+    display: none;
+}
+
+.post-meta {
+    color: #8899a6;
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
 }
 
 .load-more-btn {
@@ -455,6 +445,29 @@ body {
     background-color: #1991db;
 }
 
+/* 密码输入框容器 */
+.password-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-container input {
+    width: 100%;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    color: #8899a6;
+    transition: color 0.2s;
+}
+
+.toggle-password:hover {
+    color: #1da1f2;
+}
+
 /* 登录页面样式 */
 .login-page {
     display: flex;
@@ -510,6 +523,50 @@ body {
 
 .login-btn:hover {
     background-color: #1991db;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    color: #fff;
+    font-size: 14px;
+}
+
+.remember-me input[type="checkbox"] {
+    margin-right: 8px;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+
+.remember-me label {
+    cursor: pointer;
+    user-select: none;
+    color: #8899a6;
+}
+
+.remember-me:hover label {
+    color: #fff;
+}
+
+.password-container {
+    position: relative;
+    width: 100%;
+}
+
+.password-container input {
+    width: 100%;
+    padding-right: 35px;
+}
+
+.password-container .fas {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
 }
 
 /* 移动端适配 */
@@ -582,7 +639,7 @@ body {
 /* 小屏幕适配 */
 @media (max-width: 480px) {
     .container {
-        padding: 20px 8px 8px;
+        padding: 70px 8px 8px;
     }
 
     .post {
